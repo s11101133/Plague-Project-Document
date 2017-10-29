@@ -1,0 +1,51 @@
+//=====場景物品階段=====//
+
+[ItemActorBase]
+.生成場景物品
+
+[ItemActorBase.Display()]
+.注入資料
+注入資料型態 : PickUpItemStruct(提示文字、物品ID、物品數量)
+
+.ID、數量驗證
+驗證失敗直接刪除此場景物品
+
+.ID轉換成實體物品資料
+轉換成PlayerItemStruct(物品ID、物品資料、物品數量)
+
+//=====玩家接觸階段=====//
+
+[PlayerBP.AddPickUpData()]
+.接觸物品新增至緩存(Cache_PickUpItemActor)
+
+.註冊互動事件(Bind OnInteractive)
+
+[PlayerBP.TickPickUpItem()]
+.監測可撿取狀態，開關撿取提示UI
+
+//=====玩家離開階段=====//
+
+[PlayerBP.RemovePickUpData()]
+.從緩存中移除(Cache_PickUpItemActor)
+
+//=====玩家撿取階段=====//
+
+[PlayerBP.PlayerPickUpItem()]
+.驗證可撿取狀態
+驗證失敗則不往下執行
+
+.播放角色撿取動畫
+
+.顯示獲取物品提示UI
+
+.刪除場景物品
+
+//=====物品資料階段=====//
+//玩家所持物品資料儲存於PlayerMainController
+//使用2個陣列做儲存，分別是ID陣列(ItemList(ID))和資料陣列(ItemList(Data))
+//這2個陣列具有相依性，必須同時修改確保資料位置能相等
+
+[PlayerMainController.PlayerGetItem()]
+.檢測所持物品是否有相同物品(檢查ID)
+是 : 增加該物品數量
+否 : 新增ID進緩存、新增物品進緩存
